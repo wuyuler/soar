@@ -22,6 +22,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/XiaoMi/soar/ast"
@@ -979,6 +980,39 @@ func (q *Query4Audit) RuleDateNotQuote() Rule {
 				rule.Position = position[0]
 			}
 			rule = HeuristicRules["LIT.002"]
+		}
+	}
+
+	return rule
+}
+
+// RuleDateNotQuote LIT.005
+func (q *Query4Audit) RuleDateTooOld() Rule {
+	var rule = q.RuleOK()
+	// by pass insert except, insert select
+	switch n := q.Stmt.(type) {
+	case *sqlparser.Insert:
+		var insertSelect bool
+		switch n.Rows.(type) {
+		case *sqlparser.Select:
+			insertSelect = true
+		}
+		if !insertSelect {
+			return rule
+		}
+	}
+	re := regexp.MustCompile(`\d{4}-\d{1,2}-\d{1,2}`)
+	sqls := re.FindAllString(q.Query, -1)
+	for _, sql := range sqls {
+		date, err := time.Parse("2006-01-02", sql)
+		if err == nil {
+			if date.Year() < time.Now().Year()-1 {
+				rule = HeuristicRules["LIT.005"]
+				if position := re.FindIndex([]byte(q.Query)); len(position) > 0 {
+					rule.Position = position[0]
+				}
+				return rule
+			}
 		}
 	}
 

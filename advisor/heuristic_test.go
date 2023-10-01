@@ -108,6 +108,27 @@ func TestRuleSameAlias(t *testing.T) {
 	common.Log.Debug("Exiting function: %s", common.GetFunctionName())
 }
 
+// LIT.005
+func TestRuleDateTooOld(t *testing.T) {
+	common.Log.Debug("Entering function: %s", common.GetFunctionName())
+	sqls := []string{
+		"select * from tab1 where date_col>'1997-01-01'",
+		"select * from tab1 where date_col>'2021-01-01'",
+	}
+	for _, sql := range sqls {
+		q, err := NewQuery4Audit(sql)
+		if err == nil {
+			rule := q.RuleDateTooOld()
+			if rule.Item != "LIT.005" {
+				t.Error("Rule not match:", rule.Item, "Expect : LIT.005")
+			}
+		} else {
+			t.Error("sqlparser.Parse Error:", err)
+		}
+	}
+	common.Log.Debug("Exiting function: %s", common.GetFunctionName())
+}
+
 // ARG.001
 func TestRulePrefixLike(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())

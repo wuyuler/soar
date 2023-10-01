@@ -44,7 +44,7 @@ func TestMain(m *testing.M) {
 		common.DevPath, _ = filepath.Abs(filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator))))
 	}
 	common.BaseDir = common.DevPath
-	err := common.ParseConfig("")
+	err := common.ParseConfig("/Users/yjt/Desktop/soar.yaml")
 	common.LogIfError(err, "init ParseConfig")
 	common.Log.Debug("advisor_test init")
 	vEnv, rEnv = env.BuildEnv()

@@ -930,6 +930,14 @@ func InitHeuristicRules() {
 			Case:     "USE db",
 			Func:     (*Query4Audit).RuleOK, // TODO: RuleAddDelimiter
 		},
+		"LIT.005": {
+			Item:     "LIT.005",
+			Severity: "L1",
+			Summary:  "检查一下是否需要这么老的数据",
+			Content:  `大部分时候不需要使用这么老的数据`,
+			Case:     "select * from tab1 where date_col>'1997-01-01'",
+			Func:     (*Query4Audit).RuleDateTooOld, // TODO: RuleAddDelimiter
+		},
 		"RES.001": {
 			Item:     "RES.001",
 			Severity: "L4",
