@@ -3,8 +3,8 @@
 
 import sys, re, subprocess
 import os.path
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# reload(sys)
+#sys.setdefaultencoding("utf-8")
 
 SOAR_ARGS=["-ignore-rules=OK"]
 USE_DATABASE=""
@@ -30,8 +30,8 @@ def printSqlAdvisor(buf):
     if len(SOAR_ARGS) > 0:
         cmd = cmd + SOAR_ARGS
 
-    p = subprocess.Popen(["soar"], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-    adv = p.communicate(input=buf)[0]
+    p = subprocess.Popen(["/Users/yjt/Desktop/soar_demo/soar/bin/soar"], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    adv = p.communicate(input=buf.encode())[0]
 
     # 清理环境
     USE_DATABASE = ""
@@ -41,7 +41,8 @@ def printSqlAdvisor(buf):
         adv = adv.split('\n', 1)[1]
     except:
         pass
-    sys.stdout.write(adv + "\n")
+    # sys.stdout.write(adv + "\n")
+    sys.stdout.write(adv.decode() + "\n")
 
 # 从统计信息中获取database信息
 def getUseDB(line):
